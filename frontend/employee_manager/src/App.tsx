@@ -59,7 +59,7 @@ function App() {
           <ul>
             {results.map((r, i) => (
               <li key={i}>
-                <b>{r.id} - {r.name}</b> → {r.status} ({r.reason})
+                <b>{r.id}</b> → {r.status} ({r.reason})
               </li>
             ))}
           </ul>
