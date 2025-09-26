@@ -3,17 +3,13 @@ import { useState } from 'react';
 import axios from 'axios'
 
 
-interface Employee {
-  id: string;
-  access_level: number;
-  request_time: string;
-  room: string;
-}
+
 
 interface Result {
   id: string;
   status: "Granted" | "Denied";
   reason: string;
+  name: string;
 }
 
 
@@ -22,6 +18,8 @@ function App() {
   const [file, setFile] = useState<File | null>(null);
   const [results, setResults] = useState<Result[]>([]);
 
+  const formData = new FormData();
+  formData.append("file", file); 
 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,12 +31,12 @@ function App() {
   const handleSimulate = async () => {
     if (!file) return;
 
-    const text = await file.text();
-    const employees: Employee[] = JSON.parse(text);
+    // const text = await file.text();
+    // const employees: Employee[] = JSON.parse(text);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/access/simulate", {
-        employees,
+      const res = await axios.post("http://localhost:5000/api/access/simulate", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
       });
       setResults(res.data);
     } catch (err) {
@@ -61,7 +59,7 @@ function App() {
           <ul>
             {results.map((r, i) => (
               <li key={i}>
-                <b>{r.id}</b> → {r.status} ({r.reason})
+                <b>{r.id} - {r.name}</b> → {r.status} ({r.reason})
               </li>
             ))}
           </ul>
